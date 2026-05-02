@@ -1,0 +1,1434 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>中建一局物资管理系统 - 整合平台</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/echarts.min.js"></script>
+<style>
+:root{--primary:#0052D9}
+.sidebar-item-active{background-color:rgba(0,82,217,0.1);color:#0052D9;border-right:4px solid #0052D9}
+.bg-login{background:linear-gradient(135deg,#0052D9 0%,#003399 100%)}
+.bg-alert-red{background:linear-gradient(135deg,#FFEDED 0%,#FFF5F5 100%)}
+.tab-active{color:#0052D9;border-bottom:2px solid #0052D9}
+.step-active{background-color:#0052D9;color:white}
+.step-done{background-color:#E1EEFF;color:#0052D9}
+.page-section{display:none}
+.page-section.active{display:block}
+#login-page{display:flex}
+#login-page.hidden{display:none!important}
+#main-app{display:none}
+#main-app.active{display:flex}
+</style>
+</head>
+<body>
+<div id="login-page" class="bg-gray-50 flex items-center justify-center min-h-screen">
+<div class="flex w-[1000px] h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden">
+<div class="w-1/2 bg-login p-12 flex flex-col justify-between text-white relative">
+<div class="z-10">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-white p-2 rounded-lg">
+<iconify-icon class="text-3xl text-[#0052D9]" icon="mdi:office-building"></iconify-icon>
+</div>
+<span class="text-2xl font-bold tracking-wider">中建一局</span>
+</div>
+<h1 class="text-4xl font-bold leading-tight mb-6">工程项目物资管理<br/>全生命周期系统</h1>
+<p class="text-blue-100 text-lg opacity-80">智造未来，精益管理。构建高效、透明、可追溯的工程物资供应链体系。</p>
+</div>
+<div class="z-10 flex gap-8 items-center">
+<div class="flex -space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-white" src="https://modao.cc/agent-py/media/generated_images/2026-04-29/68c5459fbf2c41c2a3e7c4f09e2c2ee5.jpg#desc=User"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-white" src="https://modao.cc/agent-py/media/generated_images/2026-04-29/68c5459fbf2c41c2a3e7c4f09e2c2ee5.jpg#desc=User"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-white" src="https://modao.cc/agent-py/media/generated_images/2026-04-29/68c5459fbf2c41c2a3e7c4f09e2c2ee5.jpg#desc=User"/>
+</div>
+<p class="text-sm">已有 1,280 个项目部在线</p>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10">
+<iconify-icon class="text-[300px]" icon="mdi:crane"></iconify-icon>
+</div>
+</div>
+<div class="w-1/2 p-12 flex flex-col justify-center">
+<div class="mb-10 text-center">
+<h2 class="text-2xl font-bold text-gray-800">欢迎登录</h2>
+<p class="text-gray-500 mt-2">请输入您的凭据访问管理平台</p>
+</div>
+<form id="login-form" class="space-y-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">选择角色</label>
+<div class="relative">
+<select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0052D9] focus:border-transparent outline-none appearance-none cursor-pointer">
+<option value="headquarters">总部管理人员</option>
+<option value="regional">区域分公司管理</option>
+<option selected value="project">项目部物资主管</option>
+<option value="supplier">外部供应商门户</option>
+</select>
+<iconify-icon class="absolute right-4 top-4 text-gray-400 pointer-events-none" icon="mdi:chevron-down"></iconify-icon>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">账号</label>
+<div class="relative">
+<iconify-icon class="absolute left-4 top-3.5 text-gray-400 text-xl" icon="mdi:account-outline"></iconify-icon>
+<input class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0052D9] outline-none" placeholder="手机号/工号" type="text" value="zhangjianguo"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+<div class="relative">
+<iconify-icon class="absolute left-4 top-3.5 text-gray-400 text-xl" icon="mdi:lock-outline"></iconify-icon>
+<input class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0052D9] outline-none" placeholder="••••••••" type="password" value="password"/>
+</div>
+</div>
+<div class="flex items-center justify-between text-sm">
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded text-[#0052D9] focus:ring-[#0052D9]" type="checkbox"/>
+<span class="text-gray-600">记住登录状态</span>
+</label>
+<a class="text-[#0052D9] font-medium hover:underline" href="#">忘记密码？</a>
+</div>
+<button class="w-full py-4 bg-[#0052D9] text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-200" type="submit">立即登录</button>
+</form>
+<div class="mt-10 text-center text-xs text-gray-400">
+<p>© 2026 中国建筑第一局（集团）有限公司 版权所有</p>
+<p class="mt-1">推荐使用 Chrome 或 Edge 浏览器以获得最佳体验</p>
+</div>
+</div>
+</div>
+</div>
+<div id="main-app" class="bg-[#F5F7FA] text-gray-800 font-sans">
+<aside class="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-[#0052D9] p-1.5 rounded-md">
+<iconify-icon class="text-xl text-white" icon="mdi:office-building"></iconify-icon>
+</div>
+<span class="text-lg font-bold text-[#0052D9]">物资管理平台</span>
+</div>
+<nav class="flex-1 overflow-y-auto py-4">
+<a class="flex items-center px-6 py-3.5 sidebar-item-active group nav-link" data-page="index" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:view-dashboard"></iconify-icon>
+<span class="font-medium">工作台首页</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="base-info" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:database-outline"></iconify-icon>
+<span>基础信息管理</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="plan" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:clipboard-list-outline"></iconify-icon>
+<span>物资计划管理</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="procurement" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:cart-outline"></iconify-icon>
+<span>采购与集采管理</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="inventory" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:warehouse"></iconify-icon>
+<span>库存管理</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="alert" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:alert-circle-outline"></iconify-icon>
+<span>库存预警</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="stock-take" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:check-circle-outline"></iconify-icon>
+<span>盘点管理</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="accounting" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:calculator-variant-outline"></iconify-icon>
+<span>成本核算</span>
+</a>
+<a class="flex items-center px-6 py-3.5 text-gray-600 hover:bg-gray-50 hover:text-[#0052D9] transition-colors nav-link" data-page="reports" href="#">
+<iconify-icon class="text-xl mr-3" icon="mdi:chart-bar"></iconify-icon>
+<span>报表中心</span>
+</a>
+</nav>
+<div class="p-6 border-t border-gray-100">
+<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+<img alt="Avatar" class="w-10 h-10 rounded-full border border-white" src="https://modao.cc/agent-py/media/generated_images/2026-04-29/b14904b8b68d4559a314f3ee0eb73a9c.jpg#desc=Avatar"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">张建国</p>
+<p class="text-xs text-gray-500 truncate">项目物资主管</p>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 ml-64 min-w-0">
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10">
+<div class="flex items-center gap-4 text-sm">
+<span class="text-gray-400">当前项目：</span>
+<div class="flex items-center gap-2 bg-blue-50 text-[#0052D9] px-3 py-1 rounded-full font-medium">
+<iconify-icon icon="mdi:map-marker"></iconify-icon>
+北京丰台河西交通枢纽项目 (CSCEC1-2026-008)
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-sm text-gray-500">
+<iconify-icon class="mr-1" icon="mdi:calendar-clock"></iconify-icon>
+2026年04月29日 星期三
+</div>
+<div class="flex items-center gap-4 border-l pl-6">
+<button class="relative text-gray-500 hover:text-[#0052D9]">
+<iconify-icon class="text-2xl" icon="mdi:bell-outline"></iconify-icon>
+<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="text-gray-500 hover:text-red-500" id="logout-btn">
+<iconify-icon class="text-2xl" icon="mdi:logout-variant"></iconify-icon>
+</button>
+</div>
+</div>
+</header>
+<div class="p-8">
+<section id="page-index" class="page-section active">
+<div class="grid grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-blue-50 rounded-xl text-[#0052D9]">
+<iconify-icon class="text-2xl" icon="mdi:currency-cny"></iconify-icon>
+</div>
+<span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">+12.5%</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">本月库存总额</p>
+<h3 class="text-2xl font-bold">¥ 4,285,600.00</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+<iconify-icon class="text-2xl" icon="mdi:truck-delivery-outline"></iconify-icon>
+</div>
+<span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded">今日</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">今日到货入库</p>
+<h3 class="text-2xl font-bold">428 吨</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-orange-50 rounded-xl text-orange-600">
+<iconify-icon class="text-2xl" icon="mdi:alert-octagon-outline"></iconify-icon>
+</div>
+<span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded">待处理</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">库存预警项目</p>
+<h3 class="text-2xl font-bold">14 项</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-purple-50 rounded-xl text-purple-600">
+<iconify-icon class="text-2xl" icon="mdi:account-check-outline"></iconify-icon>
+</div>
+<span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">进行中</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">待审批流程</p>
+<h3 class="text-2xl font-bold">8 单</h3>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8 mb-8">
+<div class="col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-lg">物资收发统计 (近15天)</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs bg-gray-100 rounded-md">周</button>
+<button class="px-3 py-1 text-xs bg-[#0052D9] text-white rounded-md">月</button>
+</div>
+</div>
+<div class="w-full h-[320px]" id="indexChart"></div>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+<h3 class="font-bold text-lg mb-4">待办审批</h3>
+<div class="flex-1 space-y-4 overflow-y-auto">
+<div class="p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer border border-transparent hover:border-blue-100">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-bold text-[#0052D9] bg-blue-100 px-2 py-0.5 rounded">物资需求</span>
+<span class="text-xs text-gray-400">10:45</span>
+</div>
+<p class="text-sm font-medium mb-1">5月份螺纹钢月度需求计划提报</p>
+<p class="text-xs text-gray-500">申请人：李志刚 (结构工程部)</p>
+</div>
+<div class="p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer border border-transparent hover:border-blue-100">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">集采合同</span>
+<span class="text-xs text-gray-400">09:20</span>
+</div>
+<p class="text-sm font-medium mb-1">中建钢构战略供应商框架协议审批</p>
+<p class="text-xs text-gray-500">待您审核：商务负责人</p>
+</div>
+<div class="p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer border border-transparent hover:border-blue-100">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded">库存调拨</span>
+<span class="text-xs text-gray-400">昨天</span>
+</div>
+<p class="text-sm font-medium mb-1">二期项目闲置方木跨项目调拨申请</p>
+<p class="text-xs text-gray-500">来源：东城安置房项目部</p>
+</div>
+<div class="p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer border border-transparent hover:border-blue-100">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-bold text-purple-600 bg-purple-100 px-2 py-0.5 rounded">领料申请</span>
+<span class="text-xs text-gray-400">昨天</span>
+</div>
+<p class="text-sm font-medium mb-1">1号楼3层二次结构砌块领用单</p>
+<p class="text-xs text-gray-500">申请人：周小波 (泥工班组)</p>
+</div>
+</div>
+<button class="w-full mt-4 py-2 text-sm text-[#0052D9] font-medium border border-[#0052D9] rounded-lg hover:bg-blue-50">查看全部审批</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-lg">最近入库记录</h3>
+<a class="text-[#0052D9] text-sm font-medium" href="#">查看明细</a>
+</div>
+<table class="w-full text-sm">
+<thead class="bg-gray-50 text-gray-500">
+<tr>
+<th class="py-3 px-4 text-left rounded-l-lg font-medium">物资名称</th>
+<th class="py-3 px-4 text-left font-medium">规格型号</th>
+<th class="py-3 px-4 text-right font-medium">数量</th>
+<th class="py-3 px-4 text-left font-medium">供应商</th>
+<th class="py-3 px-4 text-right rounded-r-lg font-medium">时间</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-gray-50 hover:bg-gray-50">
+<td class="py-4 px-4 font-medium">螺纹钢 HRB400E</td>
+<td class="py-4 px-4 text-gray-500">Φ25mm</td>
+<td class="py-4 px-4 text-right font-bold text-[#0052D9]">45.5 t</td>
+<td class="py-4 px-4 text-gray-500">中冶建研供销公司</td>
+<td class="py-4 px-4 text-right text-gray-400 text-xs">04-29 14:20</td>
+</tr>
+<tr class="border-b border-gray-50 hover:bg-gray-50">
+<td class="py-4 px-4 font-medium">通用硅酸盐水泥</td>
+<td class="py-4 px-4 text-gray-500">P.O 42.5</td>
+<td class="py-4 px-4 text-right font-bold text-[#0052D9]">120.0 t</td>
+<td class="py-4 px-4 text-gray-500">金隅冀东水泥</td>
+<td class="py-4 px-4 text-right text-gray-400 text-xs">04-29 11:35</td>
+</tr>
+<tr class="border-b border-gray-50 hover:bg-gray-50">
+<td class="py-4 px-4 font-medium">商品混凝土</td>
+<td class="py-4 px-4 text-gray-500">C35 P6</td>
+<td class="py-4 px-4 text-right font-bold text-[#0052D9]">280.0 m³</td>
+<td class="py-4 px-4 text-gray-500">北京建工构件公司</td>
+<td class="py-4 px-4 text-right text-gray-400 text-xs">04-29 09:15</td>
+</tr>
+<tr class="border-b border-gray-50 hover:bg-gray-50">
+<td class="py-4 px-4 font-medium">盘条</td>
+<td class="py-4 px-4 text-gray-500">Φ8mm</td>
+<td class="py-4 px-4 text-right font-bold text-[#0052D9]">12.8 t</td>
+<td class="py-4 px-4 text-gray-500">首钢长治钢铁</td>
+<td class="py-4 px-4 text-right text-gray-400 text-xs">昨天 16:40</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<h3 class="font-bold text-lg mb-6">快捷操作</h3>
+<div class="grid grid-cols-3 gap-4">
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-blue-50 text-[#0052D9] hover:bg-blue-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:plus-circle"></iconify-icon>
+<span class="text-sm font-medium">计划提报</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:qrcode-scan"></iconify-icon>
+<span class="text-sm font-medium">扫码入库</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:file-document-edit"></iconify-icon>
+<span class="text-sm font-medium">领料登记</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:clipboard-check"></iconify-icon>
+<span class="text-sm font-medium">库存盘点</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:chart-arc"></iconify-icon>
+<span class="text-sm font-medium">月度核算</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-2xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors group">
+<iconify-icon class="text-3xl mb-2 group-hover:scale-110 transition-transform" icon="mdi:cog"></iconify-icon>
+<span class="text-sm font-medium">系统配置</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<section id="page-base-info" class="page-section">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="flex border-b border-gray-100 px-8">
+<button class="px-6 py-4 font-medium tab-active">物资档案</button>
+<button class="px-6 py-4 font-medium text-gray-500 hover:text-[#0052D9]">供应商管理</button>
+<button class="px-6 py-4 font-medium text-gray-500 hover:text-[#0052D9]">项目部管理</button>
+<button class="px-6 py-4 font-medium text-gray-500 hover:text-[#0052D9]">仓库配置</button>
+</div>
+<div class="p-8 flex gap-8">
+<div class="w-64 border-r border-gray-100 pr-6">
+<div class="mb-4">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm outline-none focus:bg-white focus:border-[#0052D9]" placeholder="搜索分类..." type="text"/>
+</div>
+</div>
+<div class="space-y-1 text-sm">
+<div class="p-2 bg-blue-50 text-[#0052D9] rounded-md font-medium cursor-pointer flex items-center gap-2">
+<iconify-icon icon="mdi:folder-open-outline"></iconify-icon> 全部分类
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600">
+<iconify-icon class="text-gray-300" icon="mdi:chevron-right"></iconify-icon> 01 钢材类
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600 pl-6">
+<iconify-icon icon="mdi:circle-small"></iconify-icon> 螺纹钢
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600 pl-6">
+<iconify-icon icon="mdi:circle-small"></iconify-icon> 线材
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600">
+<iconify-icon class="text-gray-300" icon="mdi:chevron-right"></iconify-icon> 02 水泥及其制品
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600">
+<iconify-icon class="text-gray-300" icon="mdi:chevron-right"></iconify-icon> 03 地材类
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600">
+<iconify-icon class="text-gray-300" icon="mdi:chevron-right"></iconify-icon> 04 木材类
+</div>
+<div class="p-2 hover:bg-gray-50 rounded-md cursor-pointer flex items-center gap-2 text-gray-600">
+<iconify-icon class="text-gray-300" icon="mdi:chevron-right"></iconify-icon> 05 周转材料
+</div>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#0052D9]" placeholder="输入名称、规格、编码查询" type="text"/>
+</div>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+<iconify-icon icon="mdi:filter-variant"></iconify-icon> 更多筛选
+</button>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+<iconify-icon class="text-lg" icon="mdi:plus"></iconify-icon> 新增物资
+</button>
+<button class="px-4 py-2 border border-[#0052D9] text-[#0052D9] rounded-lg text-sm font-bold hover:bg-blue-50">批量导入</button>
+</div>
+</div>
+<table class="w-full text-sm border-collapse">
+<thead class="bg-gray-50 text-gray-500">
+<tr>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">物资编码</th>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">物资名称</th>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">规格型号</th>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">计量单位</th>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">分类</th>
+<th class="py-3 px-4 text-left border-b border-gray-100 font-medium">状态</th>
+<th class="py-3 px-4 text-center border-b border-gray-100 font-medium">操作</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-4 border-b border-gray-100">0101010001</td>
+<td class="py-4 px-4 border-b border-gray-100 font-medium text-[#0052D9]">螺纹钢 HRB400E</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">Φ25mm * 12m</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">吨(t)</td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">钢材类</span></td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="flex items-center gap-1.5 text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full"></span> 启用中</span></td>
+<td class="py-4 px-4 border-b border-gray-100 text-center">
+<button class="text-[#0052D9] hover:underline mr-3">编辑</button>
+<button class="text-red-500 hover:underline">禁用</button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-4 border-b border-gray-100">0101010002</td>
+<td class="py-4 px-4 border-b border-gray-100 font-medium text-[#0052D9]">螺纹钢 HRB400E</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">Φ22mm * 12m</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">吨(t)</td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">钢材类</span></td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="flex items-center gap-1.5 text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full"></span> 启用中</span></td>
+<td class="py-4 px-4 border-b border-gray-100 text-center">
+<button class="text-[#0052D9] hover:underline mr-3">编辑</button>
+<button class="text-red-500 hover:underline">禁用</button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-4 border-b border-gray-100">0201010001</td>
+<td class="py-4 px-4 border-b border-gray-100 font-medium text-[#0052D9]">通用硅酸盐水泥</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">P.O 42.5 散装</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">吨(t)</td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">水泥类</span></td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="flex items-center gap-1.5 text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full"></span> 启用中</span></td>
+<td class="py-4 px-4 border-b border-gray-100 text-center">
+<button class="text-[#0052D9] hover:underline mr-3">编辑</button>
+<button class="text-red-500 hover:underline">禁用</button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-4 border-b border-gray-100">0301010025</td>
+<td class="py-4 px-4 border-b border-gray-100 font-medium text-[#0052D9]">商品混凝土</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">C35 P6</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">立方米(m³)</td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">地材类</span></td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="flex items-center gap-1.5 text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full"></span> 启用中</span></td>
+<td class="py-4 px-4 border-b border-gray-100 text-center">
+<button class="text-[#0052D9] hover:underline mr-3">编辑</button>
+<button class="text-red-500 hover:underline">禁用</button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-4 border-b border-gray-100">0502010012</td>
+<td class="py-4 px-4 border-b border-gray-100 font-medium text-[#0052D9]">建筑模板</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">1830*915*15mm 覆膜</td>
+<td class="py-4 px-4 border-b border-gray-100 text-gray-500">张</td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="px-2 py-0.5 bg-gray-100 rounded text-xs">周转材料</span></td>
+<td class="py-4 px-4 border-b border-gray-100"><span class="flex items-center gap-1.5 text-gray-400"><span class="w-2 h-2 bg-gray-300 rounded-full"></span> 已禁用</span></td>
+<td class="py-4 px-4 border-b border-gray-100 text-center">
+<button class="text-[#0052D9] hover:underline mr-3">编辑</button>
+<button class="text-[#0052D9] hover:underline">恢复</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="flex items-center justify-between mt-8">
+<span class="text-xs text-gray-500">显示第 1 到 10 条，共 584 条记录</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-400 cursor-not-allowed"><iconify-icon icon="mdi:chevron-left"></iconify-icon></button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-[#0052D9] text-white">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">3</button>
+<span class="px-1 text-gray-400 self-end">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">59</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50"><iconify-icon icon="mdi:chevron-right"></iconify-icon></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="page-plan" class="page-section">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+<h3 class="font-bold mb-6 text-gray-700 flex items-center gap-2">
+<iconify-icon class="text-[#0052D9]" icon="mdi:source-commit"></iconify-icon>
+当前处理中计划流
+</h3>
+<div class="flex items-center justify-between px-10 relative">
+<div class="absolute top-5 left-20 right-20 h-0.5 bg-gray-100 -z-0"></div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-10 h-10 rounded-full step-done flex items-center justify-center font-bold border-2 border-[#0052D9]">
+<iconify-icon class="text-xl" icon="mdi:check"></iconify-icon>
+</div>
+<span class="text-sm font-bold">申请提报</span>
+<span class="text-xs text-gray-400">李工 04-28 09:30</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-10 h-10 rounded-full step-active flex items-center justify-center font-bold shadow-lg shadow-blue-200">2</div>
+<span class="text-sm font-bold">工程部审核</span>
+<span class="text-xs text-blue-500 font-medium">正在审核...</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-bold">3</div>
+<span class="text-sm text-gray-400">物资部核对</span>
+<span class="text-xs text-gray-400">待处理</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-bold">4</div>
+<span class="text-sm text-gray-400">商务部批准</span>
+<span class="text-xs text-gray-400">待处理</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-bold">5</div>
+<span class="text-sm text-gray-400">计划下达</span>
+<span class="text-xs text-gray-400">待处理</span>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center">
+<div class="flex gap-4">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">月度需求计划</button>
+<button class="text-gray-400 font-medium hover:text-gray-600 transition-colors">季度总计划</button>
+<button class="text-gray-400 font-medium hover:text-gray-600 transition-colors">零星采购计划</button>
+</div>
+<div class="flex gap-3">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-64 pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm outline-none focus:bg-white focus:border-[#0052D9]" placeholder="搜索计划编号/名称" type="text"/>
+</div>
+</div>
+</div>
+<table class="w-full text-sm">
+<thead class="bg-gray-50 text-gray-500 uppercase">
+<tr>
+<th class="py-4 px-6 text-left font-medium">计划编号</th>
+<th class="py-4 px-6 text-left font-medium">计划名称</th>
+<th class="py-4 px-6 text-left font-medium">提报人/部门</th>
+<th class="py-4 px-6 text-right font-medium">计划金额</th>
+<th class="py-4 px-6 text-center font-medium">状态</th>
+<th class="py-4 px-6 text-center font-medium">更新时间</th>
+<th class="py-4 px-6 text-right font-medium">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-50">
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-gray-400 text-xs">JH-202604-001</td>
+<td class="py-4 px-6 font-medium">5月份主体施工阶段钢材需求计划</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-blue-100 text-[#0052D9] flex items-center justify-center text-[10px] font-bold">李</div><span>李志刚 / 工程部</span></div></td>
+<td class="py-4 px-6 text-right font-bold">¥ 1,580,000.00</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-blue-100 text-[#0052D9] rounded text-[10px] font-bold">审核中</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-29 10:30</td>
+<td class="py-4 px-6 text-right space-x-2"><button class="text-[#0052D9] hover:underline">详情</button><button class="text-[#0052D9] hover:underline">审批历史</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-gray-400 text-xs">JH-202604-002</td>
+<td class="py-4 px-6 font-medium">1-3号楼二次结构加气块采购计划</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold">王</div><span>王明哲 / 技术部</span></div></td>
+<td class="py-4 px-6 text-right font-bold">¥ 452,300.00</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded text-[10px] font-bold">已批准</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-28 15:20</td>
+<td class="py-4 px-6 text-right space-x-2"><button class="text-[#0052D9] hover:underline">查看合同</button><button class="text-[#0052D9] hover:underline">打印</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-gray-400 text-xs">JH-202604-003</td>
+<td class="py-4 px-6 font-medium">地下室防水材料专项采购计划</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px] font-bold">赵</div><span>赵四方 / 总工办</span></div></td>
+<td class="py-4 px-6 text-right font-bold">¥ 89,000.00</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-orange-100 text-orange-600 rounded text-[10px] font-bold">待完善</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-28 09:10</td>
+<td class="py-4 px-6 text-right space-x-2"><button class="text-[#0052D9] hover:underline font-bold">去补充</button><button class="text-red-500 hover:underline">撤回</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-gray-400 text-xs">JH-202604-004</td>
+<td class="py-4 px-6 font-medium">雨季临设防护网等安全物资计划</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-[10px] font-bold">孙</div><span>孙美玲 / 安全环保部</span></div></td>
+<td class="py-4 px-6 text-right font-bold">¥ 35,600.00</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded text-[10px] font-bold">已批准</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-27 17:45</td>
+<td class="py-4 px-6 text-right space-x-2"><button class="text-[#0052D9] hover:underline">详情</button><button class="text-[#0052D9] hover:underline">打印</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="page-procurement" class="page-section">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+<div class="grid grid-cols-4 gap-6">
+<div class="p-6 bg-gradient-to-br from-[#0052D9] to-[#003399] rounded-2xl text-white">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-white/20 rounded-lg">
+<iconify-icon class="text-2xl" icon="mdi:file-document-multiple"></iconify-icon>
+</div>
+<span class="text-xs bg-white/20 px-2 py-0.5 rounded">本月新增</span>
+</div>
+<p class="text-sm opacity-80 mb-1">采购订单</p>
+<h3 class="text-3xl font-bold">48 单</h3>
+<p class="text-xs mt-2 opacity-80">较上月 +23.5%</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+<iconify-icon class="text-2xl" icon="mdi:currency-cny"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">本月累计</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">采购总金额</p>
+<h3 class="text-2xl font-bold text-gray-800">¥ 2,847,600</h3>
+<p class="text-xs mt-2 text-gray-400">集采占比 67.8%</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-orange-50 rounded-lg text-orange-600">
+<iconify-icon class="text-2xl" icon="mdi:truck-check"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">执行中</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">待入库订单</p>
+<h3 class="text-2xl font-bold text-gray-800">12 单</h3>
+<p class="text-xs mt-2 text-gray-400">含加急 3 单</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-purple-50 rounded-lg text-purple-600">
+<iconify-icon class="text-2xl" icon="mdi:clock-check"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">已完成</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">本月到货</p>
+<h3 class="text-2xl font-bold text-gray-800">36 单</h3>
+<p class="text-xs mt-2 text-gray-400">准时率 94.4%</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100">
+<div class="flex gap-6">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">采购订单</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">集采分配</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">供应商报价</button>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-6">
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+<iconify-icon icon="mdi:plus"></iconify-icon> 新建采购单
+</button>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+<iconify-icon icon="mdi:cloud-upload"></iconify-icon> 批量导入
+</button>
+</div>
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm outline-none focus:bg-white focus:border-[#0052D9]" placeholder="订单编号/供应商名称/物资名称" type="text"/>
+</div>
+</div>
+<table class="w-full text-sm">
+<thead class="text-gray-500">
+<tr class="border-b border-gray-100">
+<th class="pb-3 text-left font-medium">订单编号</th>
+<th class="pb-3 text-left font-medium">供应商</th>
+<th class="pb-3 text-left font-medium">采购类型</th>
+<th class="pb-3 text-right font-medium">订单金额</th>
+<th class="pb-3 text-center font-medium">订单状态</th>
+<th class="pb-3 text-center font-medium">交货日期</th>
+<th class="pb-3 text-right font-medium">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-50">
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-[#0052D9] font-medium">CG-20260429-001</td>
+<td class="py-4"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-blue-50 text-[#0052D9] flex items-center justify-center font-bold text-xs">首</div><div><div class="font-medium">首钢长治钢铁有限公司</div><div class="text-xs text-gray-400">框架协议供应商</div></div></div></td>
+<td class="py-4"><span class="px-2 py-1 bg-purple-100 text-purple-600 rounded text-xs font-medium">集采</span></td>
+<td class="py-4 text-right font-bold">¥ 285,600.00</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs font-medium">备货中</span></td>
+<td class="py-4 text-center text-gray-400 text-xs">05月05日</td>
+<td class="py-4 text-right"><button class="text-[#0052D9] hover:underline font-medium">详情</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-[#0052D9] font-medium">CG-20260428-003</td>
+<td class="py-4"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">金</div><div><div class="font-medium">金隅冀东水泥供销公司</div><div class="text-xs text-gray-400">长期战略合作</div></div></div></td>
+<td class="py-4"><span class="px-2 py-1 bg-purple-100 text-purple-600 rounded text-xs font-medium">集采</span></td>
+<td class="py-4 text-right font-bold">¥ 168,000.00</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-600 rounded text-xs font-medium">运输中</span></td>
+<td class="py-4 text-center text-gray-400 text-xs">明天</td>
+<td class="py-4 text-right"><button class="text-[#0052D9] hover:underline font-medium">详情</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-[#0052D9] font-medium">CG-20260428-002</td>
+<td class="py-4"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-xs">建</div><div><div class="font-medium">北京建工构件有限公司</div><div class="text-xs text-gray-400">本地优质供应商</div></div></div></td>
+<td class="py-4"><span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">自采</span></td>
+<td class="py-4 text-right font-bold">¥ 89,600.00</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-medium">已到货</span></td>
+<td class="py-4 text-center text-gray-400 text-xs">今天</td>
+<td class="py-4 text-right"><button class="text-[#0052D9] hover:underline font-medium">签收</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="page-inventory" class="page-section">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+<div class="grid grid-cols-5 gap-6">
+<div class="p-5 border border-gray-100 rounded-xl text-center">
+<p class="text-xs text-gray-400 mb-1">当前库存总量</p>
+<p class="text-2xl font-bold text-[#0052D9]">4,285,600</p>
+<p class="text-xs text-gray-400">吨/件/立方米</p>
+</div>
+<div class="p-5 border border-gray-100 rounded-xl text-center">
+<p class="text-xs text-gray-400 mb-1">库存项目数</p>
+<p class="text-2xl font-bold text-gray-800">1,284</p>
+<p class="text-xs text-gray-400">种物资分类</p>
+</div>
+<div class="p-5 border border-gray-100 rounded-xl text-center">
+<p class="text-xs text-gray-400 mb-1">库存预警</p>
+<p class="text-2xl font-bold text-orange-500">14</p>
+<p class="text-xs text-gray-400">项需要关注</p>
+</div>
+<div class="p-5 border border-gray-100 rounded-xl text-center">
+<p class="text-xs text-gray-400 mb-1">本周出库</p>
+<p class="text-2xl font-bold text-emerald-600">1,286</p>
+<p class="text-xs text-gray-400">较上周 -5.2%</p>
+</div>
+<div class="p-5 border border-gray-100 rounded-xl text-center">
+<p class="text-xs text-gray-400 mb-1">本周入库</p>
+<p class="text-2xl font-bold text-purple-600">1,524</p>
+<p class="text-xs text-gray-400">较上周 +12.8%</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center">
+<div class="flex gap-6">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">库存台账</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">入库记录</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">出库记录</button>
+</div>
+<div class="flex gap-3">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm outline-none focus:bg-white focus:border-[#0052D9]" placeholder="物资编码/名称/规格型号" type="text"/>
+</div>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+<iconify-icon icon="mdi:filter-variant"></iconify-icon> 筛选
+</button>
+</div>
+</div>
+<div class="p-6">
+<table class="w-full text-sm">
+<thead class="text-gray-500 text-xs uppercase">
+<tr class="border-b border-gray-100">
+<th class="pb-3 text-left font-medium">物资编码</th>
+<th class="pb-3 text-left font-medium">物资名称</th>
+<th class="pb-3 text-left font-medium">规格型号</th>
+<th class="pb-3 text-right font-medium">库存数量</th>
+<th class="pb-3 text-right font-medium">计划单价</th>
+<th class="pb-3 text-right font-medium">库存金额</th>
+<th class="pb-3 text-center font-medium">库存上限</th>
+<th class="pb-3 text-center font-medium">库存下限</th>
+<th class="pb-3 text-center font-medium">状态</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-50">
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-xs text-gray-400">0101010001</td>
+<td class="py-4 font-medium text-[#0052D9]">螺纹钢 HRB400E</td>
+<td class="py-4 text-gray-500">Φ25mm</td>
+<td class="py-4 text-right font-bold">285.6 t</td>
+<td class="py-4 text-right text-gray-500">¥ 4,850</td>
+<td class="py-4 text-right font-bold">¥ 1,385,160</td>
+<td class="py-4 text-center text-gray-400">500 t</td>
+<td class="py-4 text-center text-gray-400">50 t</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs">正常</span></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-xs text-gray-400">0101010002</td>
+<td class="py-4 font-medium text-[#0052D9]">螺纹钢 HRB400E</td>
+<td class="py-4 text-gray-500">Φ22mm</td>
+<td class="py-4 text-right font-bold text-orange-500">38.5 t</td>
+<td class="py-4 text-right text-gray-500">¥ 4,780</td>
+<td class="py-4 text-right font-bold text-orange-500">¥ 184,030</td>
+<td class="py-4 text-center text-gray-400">400 t</td>
+<td class="py-4 text-center text-gray-400">50 t</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-orange-100 text-orange-600 rounded text-xs">偏低</span></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-xs text-gray-400">0201010001</td>
+<td class="py-4 font-medium text-[#0052D9]">通用硅酸盐水泥</td>
+<td class="py-4 text-gray-500">P.O 42.5</td>
+<td class="py-4 text-right font-bold">156.0 t</td>
+<td class="py-4 text-right text-gray-500">¥ 480</td>
+<td class="py-4 text-right font-bold">¥ 74,880</td>
+<td class="py-4 text-center text-gray-400">300 t</td>
+<td class="py-4 text-center text-gray-400">30 t</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs">正常</span></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 font-mono text-xs text-gray-400">0301010025</td>
+<td class="py-4 font-medium text-[#0052D9]">商品混凝土</td>
+<td class="py-4 text-gray-500">C35 P6</td>
+<td class="py-4 text-right font-bold">428.0 m³</td>
+<td class="py-4 text-right text-gray-500">¥ 580</td>
+<td class="py-4 text-right font-bold">¥ 248,240</td>
+<td class="py-4 text-center text-gray-400">600 m³</td>
+<td class="py-4 text-center text-gray-400">50 m³</td>
+<td class="py-4 text-center"><span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs">告警</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="page-alert" class="page-section">
+<div class="grid grid-cols-4 gap-6 mb-8">
+<div class="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-2xl text-white">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-white/20 rounded-xl">
+<iconify-icon class="text-2xl" icon="mdi:alert-circle"></iconify-icon>
+</div>
+<span class="text-xs bg-white/20 px-2 py-0.5 rounded">需要立即处理</span>
+</div>
+<p class="text-sm opacity-80 mb-1">紧急告警</p>
+<h3 class="text-3xl font-bold">3 项</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-orange-50 rounded-xl text-orange-500">
+<iconify-icon class="text-2xl" icon="mdi:alert"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">库存不足</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">库存偏低</p>
+<h3 class="text-2xl font-bold text-gray-800">8 项</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-emerald-50 rounded-xl text-emerald-500">
+<iconify-icon class="text-2xl" icon="mdi:alert-circle-outline"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">待确认</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">已处理待确认</p>
+<h3 class="text-2xl font-bold text-gray-800">5 项</h3>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-gray-100">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-gray-50 rounded-xl text-gray-400">
+<iconify-icon class="text-2xl" icon="mdi:check-circle-outline"></iconify-icon>
+</div>
+<span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500">本月</span>
+</div>
+<p class="text-sm text-gray-500 mb-1">本月已处理</p>
+<h3 class="text-2xl font-bold text-gray-800">23 项</h3>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100 flex gap-6">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">全部告警</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">紧急告警</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">库存偏低</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">积压告警</button>
+</div>
+<div class="p-6 space-y-4">
+<div class="p-5 bg-gradient-to-r from-red-50 to-white border border-red-100 rounded-xl">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-red-100 rounded-xl text-red-500">
+<iconify-icon class="text-2xl" icon="mdi:alert-circle"></iconify-icon>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-red-600">库存严重不足 - 商品混凝土 C35 P6</h4>
+<p class="text-sm text-gray-500 mt-1">当前库存 48.0 m³，低于安全库存 100m³，已触发紧急补货提醒</p>
+</div>
+<span class="text-xs text-red-400 bg-red-100 px-2 py-0.5 rounded font-medium">紧急</span>
+</div>
+<div class="flex gap-6 text-xs text-gray-400 mt-3">
+<span><iconify-icon class="mr-1" icon="mdi:warehouse"></iconify-icon> 主仓库 - A区</span>
+<span><iconify-icon class="mr-1" icon="mdi:calendar"></iconify-icon> 预警时间：04-29 10:30</span>
+<span><iconify-icon class="mr-1" icon="mdi:account"></iconify-icon> 触发人：系统</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">立即采购</button>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50">查看详情</button>
+</div>
+</div>
+</div>
+<div class="p-5 bg-gradient-to-r from-orange-50 to-white border border-orange-100 rounded-xl">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-orange-100 rounded-xl text-orange-500">
+<iconify-icon class="text-2xl" icon="mdi:alert"></iconify-icon>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-orange-600">库存偏低 - 螺纹钢 HRB400E Φ22mm</h4>
+<p class="text-sm text-gray-500 mt-1">当前库存 38.5 t，低于安全库存 50t，建议尽快补充采购</p>
+</div>
+<span class="text-xs text-orange-400 bg-orange-100 px-2 py-0.5 rounded font-medium">偏低</span>
+</div>
+<div class="flex gap-6 text-xs text-gray-400 mt-3">
+<span><iconify-icon class="mr-1" icon="mdi:warehouse"></iconify-icon> 主仓库 - 钢材区</span>
+<span><iconify-icon class="mr-1" icon="mdi:calendar"></iconify-icon> 预警时间：04-28 16:20</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-medium hover:bg-blue-700">申请采购</button>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50">稍后处理</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="page-stock-take" class="page-section">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-bold text-lg">本月盘点计划</h3>
+<p class="text-sm text-gray-400 mt-1">计划周期：2026年04月01日 - 04月30日</p>
+</div>
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+<iconify-icon icon="mdi:plus"></iconify-icon> 新建盘点单
+</button>
+</div>
+<div class="flex items-center gap-8 relative">
+<div class="absolute top-6 left-[15%] right-[15%] h-1 bg-gray-100 rounded -z-0"></div>
+<div class="flex-1 text-center relative z-10">
+<div class="w-12 h-12 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:check-circle"></iconify-icon>
+</div>
+<p class="text-sm font-medium">已完成</p>
+<p class="text-xs text-gray-400">5 个仓库</p>
+</div>
+<div class="flex-1 text-center relative z-10">
+<div class="w-12 h-12 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2 border-4 border-blue-200">
+<iconify-icon class="text-2xl" icon="mdi:warehouse"></iconify-icon>
+</div>
+<p class="text-sm font-bold text-[#0052D9]">进行中</p>
+<p class="text-xs text-[#0052D9]">2 个仓库</p>
+</div>
+<div class="flex-1 text-center relative z-10">
+<div class="w-12 h-12 mx-auto rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:clock-outline"></iconify-icon>
+</div>
+<p class="text-sm text-gray-400">未开始</p>
+<p class="text-xs text-gray-400">1 个仓库</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100 flex gap-6">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">全部记录</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">盘点中</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">待审批</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">已完成</button>
+</div>
+<table class="w-full text-sm">
+<thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+<tr>
+<th class="py-4 px-6 text-left font-medium">盘点单号</th>
+<th class="py-4 px-6 text-left font-medium">仓库名称</th>
+<th class="py-4 px-6 text-center font-medium">盘点类型</th>
+<th class="py-4 px-6 text-center font-medium">开始日期</th>
+<th class="py-4 px-6 text-center font-medium">完成进度</th>
+<th class="py-4 px-6 text-center font-medium">状态</th>
+<th class="py-4 px-6 text-right font-medium">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-50">
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-[#0052D9] font-medium">PD-202604-001</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-blue-50 text-[#0052D9] flex items-center justify-center"><iconify-icon class="text-sm" icon="mdi:warehouse"></iconify-icon></div>主仓库 - 钢材区</div></td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-purple-100 text-purple-600 rounded text-xs font-medium">月度盘点</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-01</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 rounded-full" style="width:100%"></div>
+</div>
+<span class="text-xs font-medium text-green-600">100%</span>
+</div>
+</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-medium">已完成</span></td>
+<td class="py-4 px-6 text-right"><button class="text-[#0052D9] hover:underline font-medium">查看报告</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-[#0052D9] font-medium">PD-202604-002</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center"><iconify-icon class="text-sm" icon="mdi:warehouse"></iconify-icon></div>主仓库 - 水泥区</div></td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-purple-100 text-purple-600 rounded text-xs font-medium">月度盘点</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-10</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 rounded-full" style="width:100%"></div>
+</div>
+<span class="text-xs font-medium text-green-600">100%</span>
+</div>
+</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-medium">已完成</span></td>
+<td class="py-4 px-6 text-right"><button class="text-[#0052D9] hover:underline font-medium">查看报告</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-[#0052D9] font-medium">PD-202604-003</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-orange-50 text-orange-600 flex items-center justify-center"><iconify-icon class="text-sm" icon="mdi:warehouse"></iconify-icon></div>主仓库 - 周转材料区</div></td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs font-medium">专项盘点</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-20</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 rounded-full" style="width:65%"></div>
+</div>
+<span class="text-xs font-medium text-blue-600">65%</span>
+</div>
+</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs font-medium">进行中</span></td>
+<td class="py-4 px-6 text-right"><button class="text-[#0052D9] hover:underline font-medium">继续盘点</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-[#0052D9] font-medium">PD-202604-004</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-purple-50 text-purple-600 flex items-center justify-center"><iconify-icon class="text-sm" icon="mdi:warehouse"></iconify-icon></div>露天堆场 - 砂石料区</div></td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-purple-100 text-purple-600 rounded text-xs font-medium">月度盘点</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-25</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 rounded-full" style="width:30%"></div>
+</div>
+<span class="text-xs font-medium text-blue-600">30%</span>
+</div>
+</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs font-medium">进行中</span></td>
+<td class="py-4 px-6 text-right"><button class="text-[#0052D9] hover:underline font-medium">继续盘点</button></td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 font-mono text-[#0052D9] font-medium">PD-202604-005</td>
+<td class="py-4 px-6"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-gray-50 text-gray-400 flex items-center justify-center"><iconify-icon class="text-sm" icon="mdi:warehouse"></iconify-icon></div>危化品仓库</div></td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-medium">专项盘点</span></td>
+<td class="py-4 px-6 text-center text-gray-400 text-xs">04-28</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-gray-300 rounded-full" style="width:0%"></div>
+</div>
+<span class="text-xs font-medium text-gray-400">0%</span>
+</div>
+</td>
+<td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-gray-100 text-gray-400 rounded text-xs font-medium">未开始</span></td>
+<td class="py-4 px-6 text-right"><button class="text-[#0052D9] hover:underline font-medium">开始盘点</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="page-accounting" class="page-section">
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-bold text-lg text-gray-700">2026年04月 成本核算汇总</h3>
+<p class="text-sm text-gray-400 mt-1">数据更新于 04-29 17:30</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+<iconify-icon icon="mdi:download"></iconify-icon> 导出报表
+</button>
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+<iconify-icon icon="mdi:refresh"></iconify-icon> 重新计算
+</button>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-6">
+<div class="p-6 bg-gradient-to-br from-[#0052D9] to-[#003399] rounded-2xl text-white">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-white/20 rounded-lg">
+<iconify-icon class="text-xl" icon="mdi:currency-cny"></iconify-icon>
+</div>
+</div>
+<p class="text-sm opacity-80 mb-1">本月采购总支出</p>
+<h3 class="text-2xl font-bold">¥ 2,847,600</h3>
+<p class="text-xs mt-2 opacity-80">集采节约 约 ¥284,760</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+<iconify-icon class="text-xl" icon="mdi:package-variant"></iconify-icon>
+</div>
+</div>
+<p class="text-sm text-gray-500 mb-1">本月消耗材料</p>
+<h3 class="text-2xl font-bold text-gray-800">¥ 1,856,320</h3>
+<p class="text-xs mt-2 text-gray-400">占采购额 65.2%</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-orange-50 rounded-lg text-orange-600">
+<iconify-icon class="text-xl" icon="mdi:warehouse"></iconify-icon>
+</div>
+</div>
+<p class="text-sm text-gray-500 mb-1">当前库存价值</p>
+<h3 class="text-2xl font-bold text-gray-800">¥ 4,285,600</h3>
+<p class="text-xs mt-2 text-gray-400">库存周转天数 68天</p>
+</div>
+<div class="p-6 bg-white border border-gray-100 rounded-2xl">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-purple-50 rounded-lg text-purple-600">
+<iconify-icon class="text-xl" icon="mdi:chart-line"></iconify-icon>
+</div>
+</div>
+<p class="text-sm text-gray-500 mb-1">预算执行偏差</p>
+<h3 class="text-2xl font-bold text-emerald-600">-2.8%</h3>
+<p class="text-xs mt-2 text-gray-400">优于预算目标</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<h3 class="font-bold text-lg mb-6">材料消耗分类占比</h3>
+<div class="w-full h-[280px]" id="accountingPieChart"></div>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<h3 class="font-bold text-lg mb-6">月度成本趋势</h3>
+<div class="w-full h-[280px]" id="accountingLineChart"></div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center">
+<h3 class="font-bold text-gray-700">消耗明细台账</h3>
+<div class="flex gap-3">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-2.5 text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="w-64 pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm outline-none focus:bg-white focus:border-[#0052D9]" placeholder="搜索物资/班组/施工部位" type="text"/>
+</div>
+</div>
+</div>
+<table class="w-full text-sm">
+<thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+<tr>
+<th class="py-4 px-6 text-left font-medium">日期</th>
+<th class="py-4 px-6 text-left font-medium">物资名称</th>
+<th class="py-4 px-6 text-left font-medium">领用班组</th>
+<th class="py-4 px-6 text-left font-medium">施工部位</th>
+<th class="py-4 px-6 text-right font-medium">数量</th>
+<th class="py-4 px-6 text-right font-medium">单价</th>
+<th class="py-4 px-6 text-right font-medium">金额</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-50">
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 text-gray-400 text-xs">04-29</td>
+<td class="py-4 px-6 font-medium text-[#0052D9]">商品混凝土 C35 P6</td>
+<td class="py-4 px-6 text-gray-500">混凝土班组 - 王强</td>
+<td class="py-4 px-6 text-gray-500">1#楼 3层 梁柱</td>
+<td class="py-4 px-4 text-right font-medium">28.5 m³</td>
+<td class="py-4 px-4 text-right text-gray-500">¥ 580</td>
+<td class="py-4 px-4 text-right font-bold">¥ 16,530</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 text-gray-400 text-xs">04-29</td>
+<td class="py-4 px-6 font-medium text-[#0052D9]">螺纹钢 HRB400E Φ25</td>
+<td class="py-4 px-6 text-gray-500">钢筋班组 - 张伟</td>
+<td class="py-4 px-6 text-gray-500">2#楼 4层 楼板</td>
+<td class="py-4 px-4 text-right font-medium">2.8 t</td>
+<td class="py-4 px-4 text-right text-gray-500">¥ 4,850</td>
+<td class="py-4 px-4 text-right font-bold">¥ 13,580</td>
+</tr>
+<tr class="hover:bg-gray-50">
+<td class="py-4 px-6 text-gray-400 text-xs">04-29</td>
+<td class="py-4 px-6 font-medium text-[#0052D9]">通用硅酸盐水泥 P.O 42.5</td>
+<td class="py-4 px-6 text-gray-500">砌筑班组 - 李勇</td>
+<td class="py-4 px-6 text-gray-500">1#楼 2层 二次结构</td>
+<td class="py-4 px-4 text-right font-medium">1.5 t</td>
+<td class="py-4 px-4 text-right text-gray-500">¥ 480</td>
+<td class="py-4 px-4 text-right font-bold">¥ 720</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="page-reports" class="page-section">
+<div class="grid grid-cols-3 gap-6 mb-8">
+<div class="col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex gap-6 mb-6">
+<button class="text-[#0052D9] font-bold border-b-2 border-[#0052D9] pb-1">库存分析报表</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">收发存汇总表</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">消耗分析报表</button>
+<button class="text-gray-400 font-medium hover:text-gray-600">供应商评估报表</button>
+</div>
+<div class="flex justify-between items-center mb-6">
+<div class="flex gap-4">
+<select class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none">
+<option>2026年</option>
+<option>2025年</option>
+</select>
+<select class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none">
+<option>04月</option>
+<option>03月</option>
+</select>
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50">自定义时间</button>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+<iconify-icon icon="mdi:printer"></iconify-icon> 打印
+</button>
+<button class="px-4 py-2 bg-[#0052D9] text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+<iconify-icon icon="mdi:download"></iconify-icon> 导出Excel
+</button>
+</div>
+</div>
+<div class="w-full h-[400px]" id="reportsChart"></div>
+</div>
+<div class="space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<h3 class="font-bold text-gray-700 mb-4">快速报表</h3>
+<div class="space-y-3">
+<button class="w-full p-4 bg-blue-50 rounded-xl text-left hover:bg-blue-100 transition-colors flex items-center gap-3">
+<div class="p-2 bg-blue-100 rounded-lg text-blue-600">
+<iconify-icon class="text-xl" icon="mdi:warehouse"></iconify-icon>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-700">库存台账明细</p>
+<p class="text-xs text-gray-400">实时库存数据</p>
+</div>
+</button>
+<button class="w-full p-4 bg-emerald-50 rounded-xl text-left hover:bg-emerald-100 transition-colors flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+<iconify-icon class="text-xl" icon="mdi:truck-delivery"></iconify-icon>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-700">入库汇总报表</p>
+<p class="text-xs text-gray-400">按时间/供应商</p>
+</div>
+</button>
+<button class="w-full p-4 bg-orange-50 rounded-xl text-left hover:bg-orange-100 transition-colors flex items-center gap-3">
+<div class="p-2 bg-orange-100 rounded-lg text-orange-600">
+<iconify-icon class="text-xl" icon="mdi:package-variant-closed"></iconify-icon>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-700">出库汇总报表</p>
+<p class="text-xs text-gray-400">按班组/施工部位</p>
+</div>
+</button>
+<button class="w-full p-4 bg-purple-50 rounded-xl text-left hover:bg-purple-100 transition-colors flex items-center gap-3">
+<div class="p-2 bg-purple-100 rounded-lg text-purple-600">
+<iconify-icon class="text-xl" icon="mdi:chart-pie"></iconify-icon>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-700">消耗分析报表</p>
+<p class="text-xs text-gray-400">成本归集分析</p>
+</div>
+</button>
+<button class="w-full p-4 bg-gray-50 rounded-xl text-left hover:bg-gray-100 transition-colors flex items-center gap-3">
+<div class="p-2 bg-gray-100 rounded-lg text-gray-600">
+<iconify-icon class="text-xl" icon="mdi:file-chart"></iconify-icon>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-700">集采执行报表</p>
+<p class="text-xs text-gray-400">集采比例分析</p>
+</div>
+</button>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<h3 class="font-bold text-gray-700 mb-4">历史报表</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-gray-400" icon="mdi:file-excel"></iconify-icon>
+<div>
+<p class="text-sm font-medium">2026年3月库存收发存报表</p>
+<p class="text-xs text-gray-400">04-01 生成</p>
+</div>
+</div>
+<button class="text-[#0052D9] hover:underline text-sm">下载</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-gray-400" icon="mdi:file-excel"></iconify-icon>
+<div>
+<p class="text-sm font-medium">2026年Q1季度消耗分析</p>
+<p class="text-xs text-gray-400">04-05 生成</p>
+</div>
+</div>
+<button class="text-[#0052D9] hover:underline text-sm">下载</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-gray-400" icon="mdi:file-excel"></iconify-icon>
+<div>
+<p class="text-sm font-medium">2026年2月库存台账</p>
+<p class="text-xs text-gray-400">03-01 生成</p>
+</div>
+</div>
+<button class="text-[#0052D9] hover:underline text-sm">下载</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("login-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    document.getElementById("login-page").classList.add("hidden");
+    document.getElementById("main-app").classList.add("active");
+    setTimeout(initCharts, 100);
+  });
+  document.getElementById("logout-btn").addEventListener("click", function() {
+    document.getElementById("login-page").classList.remove("hidden");
+    document.getElementById("main-app").classList.remove("active");
+  });
+  document.querySelectorAll(".nav-link").forEach(function(link) {
+    link.addEventListener("click", function(e) {
+      e.preventDefault();
+      var page = this.getAttribute("data-page");
+      document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("sidebar-item-active"); l.classList.add("text-gray-600"); });
+      this.classList.add("sidebar-item-active");
+      this.classList.remove("text-gray-600");
+      document.querySelectorAll(".page-section").forEach(function(s) { s.classList.remove("active"); });
+      document.getElementById("page-" + page).classList.add("active");
+      setTimeout(initCharts, 100);
+    });
+  });
+  function initCharts() {
+    if (typeof echarts === "undefined") return;
+    var indexChart = echarts.init(document.getElementById("indexChart"));
+    if (indexChart) {
+      indexChart.setOption({
+        tooltip: { trigger: "axis" },
+        legend: { data: ["入库量", "出库量"], bottom: 0 },
+        grid: { left: "3%", right: "4%", bottom: "15%", top: "10%", containLabel: true },
+        xAxis: { type: "category", data: ["4月15日","4月16日","4月17日","4月18日","4月19日","4月20日","4月21日","4月22日","4月23日","4月24日","4月25日","4月26日","4月27日","4月28日","4月29日"], axisLabel: { fontSize: 10 } },
+        yAxis: { type: "value", axisLabel: { fontSize: 10 } },
+        series: [
+          { name: "入库量", type: "bar", data: [320, 280, 350, 420, 380, 290, 310, 360, 400, 370, 330, 410, 450, 380, 428], itemStyle: { color: "#0052D9" } },
+          { name: "出库量", type: "bar", data: [240, 210, 280, 320, 290, 230, 250, 280, 310, 290, 260, 330, 360, 310, 286], itemStyle: { color: "#10B981" } }
+        ]
+      });
+    }
+    var reportsChart = echarts.init(document.getElementById("reportsChart"));
+    if (reportsChart) {
+      reportsChart.setOption({
+        tooltip: { trigger: "axis" },
+        legend: { data: ["钢材类", "水泥类", "混凝土", "地材", "周转材料"], bottom: 0 },
+        grid: { left: "3%", right: "4%", bottom: "15%", top: "10%", containLabel: true },
+        xAxis: { type: "category", data: ["1月","2月","3月","4月"], axisLabel: { fontSize: 11 } },
+        yAxis: { type: "value", axisLabel: { fontSize: 11 } },
+        series: [
+          { name: "钢材类", type: "line", smooth: true, data: [120, 135, 128, 142], itemStyle: { color: "#0052D9" } },
+          { name: "水泥类", type: "line", smooth: true, data: [85, 78, 92, 88], itemStyle: { color: "#10B981" } },
+          { name: "混凝土", type: "line", smooth: true, data: [180, 165, 175, 195], itemStyle: { color: "#F59E0B" } },
+          { name: "地材", type: "line", smooth: true, data: [65, 58, 72, 68], itemStyle: { color: "#EF4444" } },
+          { name: "周转材料", type: "line", smooth: true, data: [45, 42, 48, 52], itemStyle: { color: "#8B5CF6" } }
+        ]
+      });
+    }
+    var accountingPieChart = echarts.init(document.getElementById("accountingPieChart"));
+    if (accountingPieChart) {
+      accountingPieChart.setOption({
+        tooltip: { trigger: "item" },
+        legend: { orient: "vertical", right: "5%", top: "center" },
+        series: [{
+          type: "pie",
+          radius: ["40%", "70%"],
+          center: ["35%", "50%"],
+          avoidLabelOverlap: false,
+          itemStyle: { borderRadius: 8, borderColor: "#fff", borderWidth: 2 },
+          label: { show: false },
+          data: [
+            { value: 42, name: "钢材类", itemStyle: { color: "#0052D9" } },
+            { value: 22, name: "混凝土", itemStyle: { color: "#F59E0B" } },
+            { value: 18, name: "水泥类", itemStyle: { color: "#10B981" } },
+            { value: 12, name: "地材类", itemStyle: { color: "#EF4444" } },
+            { value: 6, name: "周转材料", itemStyle: { color: "#8B5CF6" } }
+          ]
+        }]
+      });
+    }
+    var accountingLineChart = echarts.init(document.getElementById("accountingLineChart"));
+    if (accountingLineChart) {
+      accountingLineChart.setOption({
+        tooltip: { trigger: "axis" },
+        grid: { left: "3%", right: "4%", bottom: "10%", top: "10%", containLabel: true },
+        xAxis: { type: "category", data: ["1月","2月","3月","4月"], axisLabel: { fontSize: 11 } },
+        yAxis: { type: "value", axisLabel: { fontSize: 11 } },
+        series: [{
+          type: "line",
+          smooth: true,
+          data: [165, 178, 158, 185],
+          areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(0,82,217,0.3)" }, { offset: 1, color: "rgba(0,82,217,0.05)" }] } },
+          itemStyle: { color: "#0052D9" },
+          lineStyle: { width: 3 }
+        }]
+      });
+    }
+    window.addEventListener("resize", function() {
+      if (indexChart) indexChart.resize();
+      if (reportsChart) reportsChart.resize();
+      if (accountingPieChart) accountingPieChart.resize();
+      if (accountingLineChart) accountingLineChart.resize();
+    });
+  }
+});
+</script>
+</body>
+</html>
